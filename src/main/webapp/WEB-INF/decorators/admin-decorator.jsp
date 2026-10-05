@@ -6,7 +6,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title><sitemesh:write property='title'/> — Quản Trị BookStore</title>
+
+    <%-- Favicons --%>
+    <link rel="icon" href="${pageContext.request.contextPath}/assets/images/favicon.ico" sizes="any">
+    <link rel="icon" href="${pageContext.request.contextPath}/assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="${pageContext.request.contextPath}/assets/images/apple-touch-icon.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -15,6 +23,9 @@
     <sitemesh:write property='head'/>
 </head>
 <body class="admin-body">
+    <%-- Skip navigation link for accessibility --%>
+    <a href="#main-content" class="skip-link">Bỏ qua điều hướng</a>
+
     <aside class="top-notice-bar" aria-label="Thông báo quản trị">
         <div class="container top-notice-inner">
             <div class="top-notice-text">
@@ -77,7 +88,7 @@
         </div>
     </header>
 
-    <main class="main-content admin-main">
+    <main id="main-content" class="main-content admin-main">
         <div class="container">
             <sitemesh:write property='body'/>
         </div>

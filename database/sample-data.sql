@@ -8,7 +8,7 @@ BEGIN
         'admin@bookstore.vn',
         N'Quản trị viên',
         '0900000001',
-        CONVERT(VARCHAR(32), HASHBYTES('MD5', '123456'), 2),
+        '123456',
         1
     );
 END
@@ -20,7 +20,7 @@ BEGIN
         'user@bookstore.vn',
         N'Người dùng mẫu',
         '0900000002',
-        CONVERT(VARCHAR(32), HASHBYTES('MD5', '123456'), 2),
+        '123456',
         0
     );
 END

@@ -58,10 +58,6 @@ public class EmailUtil_24110288 {
     }
 
     private static String getSetting(String name) {
-        String value = System.getenv(name);
-        if (value == null || value.isBlank()) {
-            value = System.getProperty(name);
-        }
-        return value == null || value.isBlank() ? null : value;
+        return SettingsUtil_24110288.get(name);
     }
 }

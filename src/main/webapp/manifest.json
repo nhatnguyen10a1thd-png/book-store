@@ -1,0 +1,21 @@
+{
+    "name": "BookStore Tri Thức",
+    "short_name": "BookStore",
+    "description": "Tuyển chọn và cung cấp những ấn bản sách giá trị về công nghệ, kiến trúc phần mềm và văn học cổ điển.",
+    "start_url": "/KTQTDemo/home",
+    "display": "standalone",
+    "background_color": "#F4F0E8",
+    "theme_color": "#642D32",
+    "icons": [
+        {
+            "src": "assets/images/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "assets/images/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

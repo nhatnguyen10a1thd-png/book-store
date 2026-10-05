@@ -7,14 +7,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BookStore Tri Thức — Tuyển chọn và cung cấp những ấn bản sách giá trị về công nghệ, kiến trúc phần mềm và văn học cổ điển.">
+    <meta name="robots" content="index, follow">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title><sitemesh:write property='title'/> — BookStore Tri Thức</title>
+    <link rel="canonical" href="${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${requestScope['jakarta.servlet.forward.request_uri'] != null ? requestScope['jakarta.servlet.forward.request_uri'] : pageContext.request.requestURI}">
+
+    <%-- Favicons --%>
+    <link rel="icon" href="${pageContext.request.contextPath}/assets/images/favicon.ico" sizes="any">
+    <link rel="icon" href="${pageContext.request.contextPath}/assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="${pageContext.request.contextPath}/assets/images/apple-touch-icon.png">
+    <link rel="manifest" href="${pageContext.request.contextPath}/manifest.json">
+
+    <%-- Open Graph --%>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BookStore Tri Thức — Ấn bản sách giá trị">
+    <meta property="og:description" content="Không gian lưu giữ và lan tỏa các ấn bản công nghệ, kiến trúc phần mềm và văn học cổ điển.">
+    <meta property="og:url" content="${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.requestURI}">
+    <meta property="og:image" content="${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/assets/images/og-image.jpg">
+
+    <%-- Twitter Card --%>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BookStore Tri Thức — Ấn bản sách giá trị">
+    <meta name="twitter:description" content="Không gian lưu giữ và lan tỏa các ấn bản công nghệ, kiến trúc phần mềm và văn học cổ điển.">
+    <meta name="twitter:image" content="${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/assets/images/og-image.jpg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css?v=20261005">
+
+    <%-- JSON-LD Structured Data --%>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "BookStore Tri Thức",
+        "url": "${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/",
+        "description": "Tuyển chọn và cung cấp những ấn bản sách giá trị về công nghệ, kiến trúc phần mềm và văn học cổ điển."
+    }
+    </script>
+
     <sitemesh:write property='head'/>
 </head>
 <body>
+    <%-- Skip navigation link for accessibility --%>
+    <a href="#main-content" class="skip-link">Bỏ qua điều hướng</a>
+
     <aside class="top-notice-bar" aria-label="Thông báo đầu trang">
         <div class="container top-notice-inner">
             <div class="top-notice-text">
@@ -154,7 +193,7 @@
         </div>
     </c:if>
 
-    <main class="main-content">
+    <main id="main-content" class="main-content">
         <div class="container">
             <sitemesh:write property='body'/>
         </div>
@@ -193,23 +232,11 @@
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const miniCart = document.querySelector('.mini-cart');
-            const cartToast = document.getElementById('cartToast');
+    <noscript>
+        <style>.mini-cart-dropdown { display: none; } .cart-toast { display: none; }</style>
+        <p class="noscript-notice">Trình duyệt của bạn chưa bật JavaScript. Một số chức năng (giỏ hàng thu nhỏ, thông báo) sẽ không hoạt động.</p>
+    </noscript>
 
-            document.addEventListener('click', function(event) {
-                if (miniCart && miniCart.open && !miniCart.contains(event.target)) {
-                    miniCart.removeAttribute('open');
-                }
-            });
-
-            if (cartToast) {
-                window.setTimeout(function() {
-                    cartToast.classList.add('cart-toast-hidden');
-                }, 3200);
-            }
-        });
-    </script>
+    <script src="${pageContext.request.contextPath}/assets/js/app.js?v=20261005" defer></script>
 </body>
 </html>
