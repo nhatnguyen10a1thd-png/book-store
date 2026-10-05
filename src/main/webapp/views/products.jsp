@@ -23,13 +23,18 @@
                         <th>Nhà Xuất Bản</th>
                         <th>Giá Bán</th>
                         <th>Tồn Kho</th>
+                        <th>Thao Tác</th>
                     </tr>
                 </thead>
                 <tbody>
                     <c:forEach var="book" items="${books}">
                         <tr>
                             <td><code>${book.isbn}</code></td>
-                            <td style="font-weight: 500;">${book.title}</td>
+                            <td style="font-weight: 500;">
+                                <a href="${pageContext.request.contextPath}/book?id=${book.bookId}" class="product-link">
+                                    <c:out value="${book.title}"/>
+                                </a>
+                            </td>
                             <td>${book.publisher}</td>
                             <td style="color: var(--primary); font-weight: 600;">
                                 $<fmt:formatNumber value="${book.price}" minFractionDigits="2" maxFractionDigits="2"/>
@@ -41,6 +46,22 @@
                                     </c:when>
                                     <c:otherwise>
                                         <span style="color: red;">Hết hàng</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${book.quantity > 0}">
+                                        <form action="${pageContext.request.contextPath}/cart" method="post" class="add-cart-form">
+                                            <input type="hidden" name="action" value="add"/>
+                                            <input type="hidden" name="bookId" value="${book.bookId}"/>
+                                            <input type="hidden" name="quantity" value="1"/>
+                                            <input type="hidden" name="returnUrl" value="/products"/>
+                                            <button type="submit" class="btn-primary btn-small">Thêm vào giỏ</button>
+                                        </form>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button type="button" class="btn-primary btn-small" disabled>Hết hàng</button>
                                     </c:otherwise>
                                 </c:choose>
                             </td>

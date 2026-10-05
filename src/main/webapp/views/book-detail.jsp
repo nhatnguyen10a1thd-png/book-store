@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <html>
 <head>
     <title>Chi Tiết Sách - ${book.title}</title>
@@ -40,7 +41,26 @@
                 <div><strong>Publisher:</strong> ${book.publisher}</div>
                 <div><strong>Publisher_date:</strong> ${book.publishDate}</div>
                 <div><strong>Quantity:</strong> ${book.quantity}</div>
+                <div class="book-detail-price">
+                    $<fmt:formatNumber value="${book.price}" minFractionDigits="2" maxFractionDigits="2"/>
+                </div>
                 <div><strong>Reviews</strong> (${book.reviewCount > 0 ? book.reviewCount : 10})</div>
+                <c:choose>
+                    <c:when test="${book.quantity > 0}">
+                        <form action="${pageContext.request.contextPath}/cart" method="post" class="detail-cart-form">
+                            <input type="hidden" name="action" value="add"/>
+                            <input type="hidden" name="bookId" value="${book.bookId}"/>
+                            <input type="hidden" name="returnUrl" value="/book?id=${book.bookId}"/>
+                            <label for="cartQuantity"><strong>Số lượng:</strong></label>
+                            <input id="cartQuantity" type="number" name="quantity" value="1" min="1"
+                                   max="${book.quantity}" class="quantity-input" required/>
+                            <button type="submit" class="btn-primary">Thêm vào giỏ</button>
+                        </form>
+                    </c:when>
+                    <c:otherwise>
+                        <p class="out-of-stock">Sản phẩm hiện đã hết hàng.</p>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
 

@@ -95,6 +95,15 @@
                     <div><strong>Publisher_date:</strong> ${book.publishDate}</div>
                     <div><strong>Quantity:</strong> ${book.quantity}</div>
                     <div><strong>Review</strong> (${book.reviewCount > 0 ? book.reviewCount : 10})</div>
+                    <form action="${pageContext.request.contextPath}/cart" method="post" class="home-cart-form">
+                        <input type="hidden" name="action" value="add"/>
+                        <input type="hidden" name="bookId" value="${book.bookId}"/>
+                        <input type="hidden" name="quantity" value="1"/>
+                        <input type="hidden" name="returnUrl" value="/home?page=${currentPage}"/>
+                        <button type="submit" class="btn-primary btn-block" ${book.quantity <= 0 ? 'disabled' : ''}>
+                            ${book.quantity > 0 ? 'Thêm vào giỏ' : 'Hết hàng'}
+                        </button>
+                    </form>
                 </div>
             </c:forEach>
         </div>
