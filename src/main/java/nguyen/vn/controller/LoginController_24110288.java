@@ -26,20 +26,37 @@ public class LoginController_24110288 extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String redirect = getSafeRedirect(request.getParameter("redirect"));
 
         User_24110288 user = userService.login(email, password);
 
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            if (user.isAdmin()) {
+            if (redirect != null) {
+                response.sendRedirect(request.getContextPath() + redirect);
+            } else if (user.isAdmin()) {
                 response.sendRedirect(request.getContextPath() + "/admin/dashboard");
             } else {
                 response.sendRedirect(request.getContextPath() + "/home");
             }
         } else {
             request.setAttribute("error", "Email hoặc mật khẩu không đúng!");
+            request.setAttribute("redirect", redirect);
             request.getRequestDispatcher("/views/login.jsp").forward(request, response);
         }
+    }
+
+    private String getSafeRedirect(String redirect) {
+        if (redirect == null
+                || !redirect.startsWith("/")
+                || redirect.startsWith("//")
+                || redirect.contains("\\")
+                || redirect.contains("\r")
+                || redirect.contains("\n")
+                || redirect.contains("://")) {
+            return null;
+        }
+        return redirect;
     }
 }

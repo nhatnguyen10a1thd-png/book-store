@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <html>
 <head>
     <title>Đăng Nhập</title>
@@ -16,6 +17,9 @@
             </c:if>
 
             <form action="${pageContext.request.contextPath}/login" method="post">
+                <c:if test="${not empty param.redirect || not empty redirect}">
+                    <input type="hidden" name="redirect" value="${fn:escapeXml(not empty redirect ? redirect : param.redirect)}">
+                </c:if>
                 <div class="form-group">
                     <label for="email">Địa chỉ Email</label>
                     <input type="email" id="email" name="email" class="form-control" required autofocus>

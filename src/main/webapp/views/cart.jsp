@@ -101,6 +101,9 @@
                         <span>Tổng cộng</span>
                         <strong>$<fmt:formatNumber value="${sessionScope.cart.total}" minFractionDigits="2" maxFractionDigits="2"/></strong>
                     </div>
+                    <a href="${pageContext.request.contextPath}/checkout" class="btn-primary btn-block cart-checkout-button">
+                        Thanh toán COD
+                    </a>
                     <form action="${pageContext.request.contextPath}/cart" method="post"
                           onsubmit="return confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?');">
                         <input type="hidden" name="action" value="clear"/>
