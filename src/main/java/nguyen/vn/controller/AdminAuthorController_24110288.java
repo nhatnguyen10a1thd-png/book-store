@@ -35,7 +35,7 @@ public class AdminAuthorController_24110288 extends HttpServlet {
                 Author_24110288 author = authorService.getAuthorById(authorId);
                 request.setAttribute("author", author);
             }
-            request.getRequestDispatcher("/views/admin/author-form.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/author-form.jsp").forward(request, response);
         } else if ("/admin/author-delete".equals(action)) {
             String idParam = request.getParameter("id");
             if (idParam != null && !idParam.isEmpty()) {
@@ -64,7 +64,7 @@ public class AdminAuthorController_24110288 extends HttpServlet {
             request.setAttribute("currentPage", page);
             request.setAttribute("totalPages", totalPages);
 
-            request.getRequestDispatcher("/views/admin/authors.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/authors.jsp").forward(request, response);
         }
     }
 

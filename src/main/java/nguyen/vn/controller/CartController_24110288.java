@@ -31,7 +31,7 @@ public class CartController_24110288 extends HttpServlet {
         }
 
         moveFlashMessage(session, request);
-        request.getRequestDispatcher("/views/cart.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/cart.jsp").forward(request, response);
     }
 
     @Override

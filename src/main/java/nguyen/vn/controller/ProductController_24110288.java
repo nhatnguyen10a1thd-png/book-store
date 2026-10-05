@@ -20,6 +20,6 @@ public class ProductController_24110288 extends HttpServlet {
             throws ServletException, IOException {
         List<Book_24110288> books = bookService.getAllBooks();
         request.setAttribute("books", books);
-        request.getRequestDispatcher("/views/products.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/products.jsp").forward(request, response);
     }
 }

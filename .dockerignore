@@ -1,0 +1,11 @@
+.git
+.gitignore
+.idea
+.vercel
+target
+vercel-proxy
+*.iml
+*.log
+.env
+.env.*
+README-DEPLOY.md

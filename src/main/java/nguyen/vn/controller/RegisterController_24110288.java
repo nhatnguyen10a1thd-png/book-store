@@ -7,15 +7,18 @@ import nguyen.vn.model.User_24110288;
 import nguyen.vn.util.EmailUtil_24110288;
 
 import java.io.IOException;
-import java.util.Random;
+import java.security.SecureRandom;
 
 @WebServlet(name = "RegisterController_24110288", urlPatterns = {"/register"})
 public class RegisterController_24110288 extends HttpServlet {
 
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final long OTP_VALIDITY_MILLIS = 5 * 60 * 1000L;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/views/register.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
     }
 
     @Override
@@ -31,41 +34,34 @@ public class RegisterController_24110288 extends HttpServlet {
 
         if (!password.equals(confirmPassword)) {
             request.setAttribute("error", "Mật khẩu xác nhận không khớp!");
-            request.getRequestDispatcher("/views/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
             return;
         }
 
-        // Tạo OTP 6 số ngẫu nhiên
-        Random random = new Random();
-        int otpValue = 100000 + random.nextInt(900000);
-        String otp = String.valueOf(otpValue);
+        String otp = String.format("%06d", SECURE_RANDOM.nextInt(1_000_000));
 
-        // Tạo đối tượng user tạm thời để lưu sau khi xác thực OTP
         User_24110288 pendingUser = new User_24110288();
         pendingUser.setFullname(fullname);
         pendingUser.setEmail(email);
         pendingUser.setPhone(phone);
         pendingUser.setPasswd(password);
-        // Đăng ký mặc định là user bình thường
         pendingUser.setAdmin(false);
 
-        // Lưu thông tin vào session
         HttpSession session = request.getSession();
         session.setAttribute("pendingUser", pendingUser);
         session.setAttribute("registrationOTP", otp);
+        session.setAttribute("registrationOTPExpiresAt", System.currentTimeMillis() + OTP_VALIDITY_MILLIS);
         
-        // Gửi email chứa OTP
         boolean emailSent = EmailUtil_24110288.sendOTP(email, otp);
         
         if (emailSent) {
-            // Chuyển hướng đến trang xác thực OTP
             response.sendRedirect(request.getContextPath() + "/verify-otp");
         } else {
-            // Lỗi gửi email
             session.removeAttribute("pendingUser");
             session.removeAttribute("registrationOTP");
-            request.setAttribute("error", "Lỗi gửi email xác thực. Vui lòng cấu hình tài khoản gửi Email (App Password) trong EmailUtil_24110288.java!");
-            request.getRequestDispatcher("/views/register.jsp").forward(request, response);
+            session.removeAttribute("registrationOTPExpiresAt");
+            request.setAttribute("error", "Không thể gửi email xác thực lúc này. Vui lòng thử lại sau.");
+            request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
         }
     }
 }

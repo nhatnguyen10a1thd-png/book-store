@@ -5,7 +5,7 @@
                              https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
 
-    <display-name>BookStore - 24110288</display-name>
+    <display-name>BookStore</display-name>
 
     <!-- SiteMesh Filter -->
     <filter>

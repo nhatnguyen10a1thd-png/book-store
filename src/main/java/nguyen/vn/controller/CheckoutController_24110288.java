@@ -45,7 +45,7 @@ public class CheckoutController_24110288 extends HttpServlet {
 
         request.setAttribute("recipientName", user.getFullname());
         request.setAttribute("recipientPhone", user.getPhone());
-        request.getRequestDispatcher("/views/checkout.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/checkout.jsp").forward(request, response);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class CheckoutController_24110288 extends HttpServlet {
             request.setAttribute("recipientPhone", recipientPhone);
             request.setAttribute("shippingAddress", shippingAddress);
             request.setAttribute("note", note);
-            request.getRequestDispatcher("/views/checkout.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/checkout.jsp").forward(request, response);
         }
     }
 
@@ -107,6 +107,6 @@ public class CheckoutController_24110288 extends HttpServlet {
             return;
         }
         request.setAttribute("order", order);
-        request.getRequestDispatcher("/views/checkout-success.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/checkout-success.jsp").forward(request, response);
     }
 }

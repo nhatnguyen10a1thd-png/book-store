@@ -38,10 +38,15 @@ public class BookDetailController_24110288 extends HttpServlet {
             }
 
             List<Rating_24110288> reviews = ratingRepository.getRatingsByBookId(bookId);
+            double averageRating = reviews.stream()
+                    .mapToInt(Rating_24110288::getRating)
+                    .average()
+                    .orElse(0);
             
             request.setAttribute("book", book);
             request.setAttribute("reviews", reviews);
-            request.getRequestDispatcher("/views/book-detail.jsp").forward(request, response);
+            request.setAttribute("averageRating", averageRating);
+            request.getRequestDispatcher("/WEB-INF/views/book-detail.jsp").forward(request, response);
             
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath() + "/home");
@@ -56,28 +61,34 @@ public class BookDetailController_24110288 extends HttpServlet {
         
         String bookIdParam = request.getParameter("bookId");
         if (user == null) {
-            // Must login to review
             response.sendRedirect(request.getContextPath() + "/login?redirect=/book?id=" + bookIdParam);
             return;
         }
         
         String reviewText = request.getParameter("reviewText");
+        String ratingParam = request.getParameter("rating");
         
-        if (bookIdParam != null && !bookIdParam.isEmpty() && reviewText != null && !reviewText.trim().isEmpty()) {
+        if (bookIdParam != null && !bookIdParam.isEmpty()
+                && ratingParam != null && !ratingParam.isEmpty()
+                && reviewText != null && !reviewText.trim().isEmpty()) {
             try {
                 int bookId = Integer.parseInt(bookIdParam);
+                int ratingValue = Integer.parseInt(ratingParam);
+                if (ratingValue < 1 || ratingValue > 5) {
+                    response.sendRedirect(request.getContextPath() + "/book?id=" + bookId);
+                    return;
+                }
                 Rating_24110288 rating = new Rating_24110288();
                 rating.setBookId(bookId);
                 rating.setUserId(user.getId());
-                rating.setRating(5); // default 5 for now
+                rating.setRating(ratingValue);
                 rating.setReviewText(reviewText);
                 
                 ratingRepository.addRating(rating);
                 
                 response.sendRedirect(request.getContextPath() + "/book?id=" + bookId);
                 return;
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
+            } catch (NumberFormatException ignored) {
             }
         }
         response.sendRedirect(request.getContextPath() + "/home");

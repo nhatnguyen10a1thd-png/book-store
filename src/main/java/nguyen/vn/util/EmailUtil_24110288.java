@@ -5,14 +5,23 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EmailUtil_24110288 {
 
-    // THAY ĐỔI EMAIL VÀ APP PASSWORD Ở ĐÂY
-    private static final String SENDER_EMAIL = "nhatnguyen10a1thd@gmail.com";
-    private static final String SENDER_PASSWORD = "iovflanothwdmmgg";
+    private static final Logger LOGGER = Logger.getLogger(EmailUtil_24110288.class.getName());
+    private static final String SMTP_EMAIL_SETTING = "BOOKSTORE_SMTP_EMAIL";
+    private static final String SMTP_PASSWORD_SETTING = "BOOKSTORE_SMTP_APP_PASSWORD";
 
     public static boolean sendOTP(String recipientEmail, String otp) {
+        String senderEmail = getSetting(SMTP_EMAIL_SETTING);
+        String senderPassword = getSetting(SMTP_PASSWORD_SETTING);
+        if (senderEmail == null || senderPassword == null) {
+            LOGGER.severe("Thiếu cấu hình tài khoản gửi email.");
+            return false;
+        }
+
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
@@ -23,13 +32,13 @@ public class EmailUtil_24110288 {
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(SENDER_EMAIL, SENDER_PASSWORD);
+                return new PasswordAuthentication(senderEmail, senderPassword);
             }
         });
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(SENDER_EMAIL));
+            message.setFrom(new InternetAddress(senderEmail));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject("Xác thực tài khoản BookStore - Mã OTP của bạn");
 
@@ -42,9 +51,17 @@ public class EmailUtil_24110288 {
 
             Transport.send(message);
             return true;
-        } catch (MessagingException e) {
-            e.printStackTrace();
+        } catch (MessagingException exception) {
+            LOGGER.log(Level.SEVERE, "Không thể gửi email xác thực.", exception);
             return false;
         }
+    }
+
+    private static String getSetting(String name) {
+        String value = System.getenv(name);
+        if (value == null || value.isBlank()) {
+            value = System.getProperty(name);
+        }
+        return value == null || value.isBlank() ? null : value;
     }
 }

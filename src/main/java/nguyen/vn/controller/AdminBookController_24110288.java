@@ -45,7 +45,7 @@ public class AdminBookController_24110288 extends HttpServlet {
             List<Author_24110288> allAuthors = authorService.getAllAuthors();
             request.setAttribute("authors", allAuthors);
             
-            request.getRequestDispatcher("/views/admin/book-form.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/book-form.jsp").forward(request, response);
         } else if ("/admin/book-delete".equals(action)) {
             String idParam = request.getParameter("id");
             if (idParam != null && !idParam.isEmpty()) {
@@ -74,7 +74,7 @@ public class AdminBookController_24110288 extends HttpServlet {
             request.setAttribute("currentPage", page);
             request.setAttribute("totalPages", totalPages);
 
-            request.getRequestDispatcher("/views/admin/books.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/admin/books.jsp").forward(request, response);
         }
     }
 

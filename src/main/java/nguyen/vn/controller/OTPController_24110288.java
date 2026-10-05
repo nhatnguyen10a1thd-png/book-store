@@ -19,11 +19,10 @@ public class OTPController_24110288 extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         if (session.getAttribute("pendingUser") == null) {
-            // Chưa đăng ký nhưng lại truy cập trang xác thực
             response.sendRedirect(request.getContextPath() + "/register");
             return;
         }
-        request.getRequestDispatcher("/views/verify-otp.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/verify-otp.jsp").forward(request, response);
     }
 
     @Override
@@ -34,32 +33,42 @@ public class OTPController_24110288 extends HttpServlet {
         
         String sessionOtp = (String) session.getAttribute("registrationOTP");
         User_24110288 pendingUser = (User_24110288) session.getAttribute("pendingUser");
+        Long expiresAt = (Long) session.getAttribute("registrationOTPExpiresAt");
 
-        if (sessionOtp == null || pendingUser == null) {
+        if (sessionOtp == null || pendingUser == null || expiresAt == null) {
             request.setAttribute("error", "Phiên xác thực đã hết hạn. Vui lòng đăng ký lại.");
-            request.getRequestDispatcher("/views/verify-otp.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/verify-otp.jsp").forward(request, response);
+            return;
+        }
+
+        if (System.currentTimeMillis() > expiresAt) {
+            clearPendingRegistration(session);
+            request.setAttribute("error", "Mã OTP đã hết hạn. Vui lòng đăng ký lại.");
+            request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
             return;
         }
 
         if (sessionOtp.equals(enteredOtp)) {
-            // Xác thực thành công, lưu vào database
             boolean success = userService.register(pendingUser);
             
             if (success) {
-                // Xoá session tạm thời
-                session.removeAttribute("pendingUser");
-                session.removeAttribute("registrationOTP");
+                clearPendingRegistration(session);
                 
                 request.setAttribute("message", "Đăng ký thành công! Vui lòng đăng nhập.");
-                request.getRequestDispatcher("/views/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
             } else {
-                request.setAttribute("error", "Có lỗi xảy ra khi lưu vào CSDL. Vui lòng thử lại!");
-                request.getRequestDispatcher("/views/verify-otp.jsp").forward(request, response);
+                request.setAttribute("error", "Không thể hoàn tất đăng ký lúc này. Vui lòng thử lại.");
+                request.getRequestDispatcher("/WEB-INF/views/verify-otp.jsp").forward(request, response);
             }
         } else {
-            // Nhập sai mã OTP
             request.setAttribute("error", "Mã OTP không chính xác. Vui lòng nhập lại.");
-            request.getRequestDispatcher("/views/verify-otp.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/verify-otp.jsp").forward(request, response);
         }
+    }
+
+    private void clearPendingRegistration(HttpSession session) {
+        session.removeAttribute("pendingUser");
+        session.removeAttribute("registrationOTP");
+        session.removeAttribute("registrationOTPExpiresAt");
     }
 }

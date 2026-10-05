@@ -37,3 +37,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Local secrets and deployment state ###
+.env
+.env.*
+!.env.example
+.vercel/
+*.local
