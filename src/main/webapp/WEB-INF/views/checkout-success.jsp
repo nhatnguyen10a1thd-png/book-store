@@ -47,6 +47,9 @@
         </div>
 
         <div class="success-actions-row">
+            <a href="${pageContext.request.contextPath}/orders" class="btn btn-outline">
+                Xem Lịch Sử Đặt Hàng
+            </a>
             <a href="${pageContext.request.contextPath}/products" class="btn btn-primary">
                 Tiếp Tục Khám Phá Sách
             </a>

@@ -49,6 +49,24 @@ public class Order_24110288 {
     public String getOrderStatus() { return orderStatus; }
     public void setOrderStatus(String orderStatus) { this.orderStatus = orderStatus; }
 
+    public String getStatusLabel() {
+        try {
+            OrderStatus_24110288 status = OrderStatus_24110288.fromFilter(orderStatus);
+            return status == null ? "Không xác định" : status.getLabel();
+        } catch (IllegalArgumentException exception) {
+            return "Không xác định";
+        }
+    }
+
+    public String getStatusCode() {
+        try {
+            OrderStatus_24110288 status = OrderStatus_24110288.fromFilter(orderStatus);
+            return status == null ? "UNKNOWN" : status.getCode();
+        } catch (IllegalArgumentException exception) {
+            return "UNKNOWN";
+        }
+    }
+
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
 

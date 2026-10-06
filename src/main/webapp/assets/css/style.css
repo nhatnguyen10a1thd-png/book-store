@@ -319,6 +319,7 @@ code {
 
 .nav-links-list {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 28px;
 }
@@ -2205,6 +2206,23 @@ a.page-num-btn.active {
     .footer-top-grid {
         grid-template-columns: 1fr;
         gap: 24px;
+    }
+}
+
+@media (max-width: 1100px) {
+    .header-inner {
+        height: auto;
+        padding: 14px 0;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+    .primary-nav {
+        order: 3;
+        width: 100%;
+    }
+    .header-actions {
+        flex-wrap: wrap;
+        max-width: 100%;
     }
 }
 
