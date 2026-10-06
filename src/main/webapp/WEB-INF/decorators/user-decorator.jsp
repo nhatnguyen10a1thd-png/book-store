@@ -35,7 +35,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css?v=20261006">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css?v=20261007">
 
     <%-- JSON-LD Structured Data --%>
     <script type="application/ld+json">
@@ -245,6 +245,6 @@
         <p class="noscript-notice">Trình duyệt của bạn chưa bật JavaScript. Một số chức năng (giỏ hàng thu nhỏ, thông báo) sẽ không hoạt động.</p>
     </noscript>
 
-    <script src="${pageContext.request.contextPath}/assets/js/app.js?v=20261005" defer></script>
+    <script src="${pageContext.request.contextPath}/assets/js/app.js?v=20261007" defer></script>
 </body>
 </html>

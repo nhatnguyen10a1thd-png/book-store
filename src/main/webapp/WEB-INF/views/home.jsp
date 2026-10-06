@@ -103,9 +103,16 @@
                             <img src="${coverUrl}" alt="${book.title}" class="book-cover-img" loading="lazy"
                                  onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/default-book.png';"/>
                         </a>
-                        <c:if test="${book.quantity <= 0}">
-                            <span class="book-stock-pill out-of-stock">Tạm hết hàng</span>
-                        </c:if>
+                        <c:choose>
+                            <c:when test="${book.quantity <= 0}">
+                                <span class="book-stock-pill out-of-stock">Tạm hết hàng</span>
+                            </c:when>
+                            <c:when test="${book.quantity <= 3}">
+                                <span class="book-stock-pill" style="background: #FFF4E5; color: #B76E00; border-color: #FFE0B2;">
+                                    Chỉ còn ${book.quantity} cuốn
+                                </span>
+                            </c:when>
+                        </c:choose>
                     </div>
 
                     <div class="book-card-meta">

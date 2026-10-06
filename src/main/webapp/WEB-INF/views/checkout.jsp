@@ -7,7 +7,7 @@
     <title>Xác Nhận Đơn Hàng COD — BookStore Tri Thức</title>
 </head>
 <body>
-    <div class="page-header" style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end;">
+    <div class="page-header" style="margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end;">
         <div>
             <span class="eyebrow">Thủ Tục Đặt Sách</span>
             <h1>Xác Nhận Thông Tin &amp; Giao Hàng</h1>
@@ -17,6 +17,25 @@
             <a href="${pageContext.request.contextPath}/cart" class="btn btn-outline btn-small">
                 &larr; Quay lại giỏ hàng
             </a>
+        </div>
+    </div>
+
+    <!-- Trust Badges (Item 6) -->
+    <div class="checkout-trust-grid">
+        <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">📦</span>
+            <h4>Đồng Kiểm Khi Nhận Hàng</h4>
+            <p>Được mở bưu phẩm kiểm tra bìa và trang sách trước khi thanh toán cho nhân viên giao vận.</p>
+        </div>
+        <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">🛡️</span>
+            <h4>Bảo Hành Đổi Trả 7 Ngày</h4>
+            <p>Miễn phí đổi sách mới 100% nếu phát hiện trang in lỗi hoặc hư hại móp méo khi vận chuyển.</p>
+        </div>
+        <div class="trust-item">
+            <span class="trust-icon" aria-hidden="true">🚚</span>
+            <h4>Đóng Gói Chống Va Đập</h4>
+            <p>Bọc góc bảo vệ 2 lớp bìa carton cứng cáp. Dự kiến giao tới địa chỉ trong 2–3 ngày làm việc.</p>
         </div>
     </div>
 
@@ -34,12 +53,14 @@
                 <div class="form-group">
                     <label for="recipientName">Họ và tên người nhận *</label>
                     <input type="text" id="recipientName" name="recipientName" class="form-control"
-                           value="${fn:escapeXml(recipientName)}" minlength="2" maxlength="100" required>
+                           value="${fn:escapeXml(recipientName)}" minlength="2" maxlength="100"
+                           placeholder="Ví dụ: Nguyễn Văn A" required>
                 </div>
                 <div class="form-group">
                     <label for="recipientPhone">Số điện thoại liên lạc *</label>
                     <input type="tel" id="recipientPhone" name="recipientPhone" class="form-control"
-                           value="${fn:escapeXml(recipientPhone)}" minlength="9" maxlength="20" required>
+                           value="${fn:escapeXml(recipientPhone)}" minlength="9" maxlength="20"
+                           placeholder="Ví dụ: 0912 345 678" required>
                 </div>
             </div>
 
@@ -54,12 +75,13 @@
                 <textarea id="shippingAddress" name="shippingAddress" class="form-control" rows="3"
                           placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố..."
                           minlength="10" maxlength="500" required>${fn:escapeXml(shippingAddress)}</textarea>
+                <small id="addressCharCount" style="font-size: 0.8rem; color: var(--muted); display: block; margin-top: 5px;"></small>
             </div>
 
             <div class="form-group">
                 <label for="note">Ghi chú cho người vận chuyển (không bắt buộc)</label>
                 <textarea id="note" name="note" class="form-control" rows="2"
-                          placeholder="Chỉ dẫn giao hàng, thời gian nhận sách thuận tiện..."
+                          placeholder="Chỉ dẫn giao hàng, thời gian nhận sách thuận tiện nhất..."
                           maxlength="500">${fn:escapeXml(note)}</textarea>
             </div>
 
@@ -68,8 +90,8 @@
                 <input type="radio" id="paymentMethodCod" name="paymentMethod" value="COD" checked class="cod-radio-indicator">
                 <div class="cod-method-desc">
                     <label for="paymentMethodCod" style="cursor: pointer;">
-                        <strong>Thanh Toán Khi Nhận Hàng (COD)</strong>
-                        <p>Bạn thanh toán tiền mặt cho nhân viên giao vận khi nhận hàng.</p>
+                        <strong>Thanh Toán Tiền Mặt Khi Nhận Hàng (COD)</strong>
+                        <p>Bạn chỉ thanh toán đúng số tiền đơn hàng cho nhân viên giao vận sau khi nhận và kiểm tra bưu phẩm.</p>
                     </label>
                 </div>
             </div>
@@ -100,12 +122,17 @@
             </div>
 
             <div class="summary-data-row">
-                <span>Phí vận chuyển</span>
-                <span style="color: var(--forest); font-weight: 600;">$0.00</span>
+                <span>Phí vận chuyển COD</span>
+                <span style="color: var(--forest); font-weight: 700;">MIỄN PHÍ</span>
+            </div>
+
+            <div class="summary-data-row">
+                <span>Dự kiến giao hàng</span>
+                <span style="color: var(--ink); font-weight: 500;">2 – 3 ngày làm việc</span>
             </div>
 
             <div class="summary-data-row total-row">
-                <span>Tổng thanh toán</span>
+                <span>Tổng thanh toán COD</span>
                 <strong>$<fmt:formatNumber value="${sessionScope.cart.total}" minFractionDigits="2" maxFractionDigits="2"/></strong>
             </div>
 
@@ -114,7 +141,7 @@
                     Xác Nhận Đặt Đơn Hàng (COD)
                 </button>
                 <p style="font-size: 0.78rem; color: var(--muted); text-align: center; margin: 4px 0 0;">
-                    Bằng việc bấm xác nhận, bạn đồng ý nhận sách và thanh toán đúng số tiền khi đơn hàng tới.
+                    Bằng việc bấm xác nhận, bạn đồng ý nhận sách và thanh toán đúng số tiền khi đơn hàng tới nơi.
                 </p>
             </div>
         </aside>

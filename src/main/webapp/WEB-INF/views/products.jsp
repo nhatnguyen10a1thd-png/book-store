@@ -1,12 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <html>
 <head>
     <title>Danh Mục Sách — Toàn Bộ Ấn Bản Tuyển Chọn</title>
 </head>
 <body>
-    <div class="section-head" style="margin-bottom: 36px;">
+    <div class="section-head" style="margin-bottom: 28px;">
         <div class="section-head-title">
             <span class="eyebrow">Thư Mục Toàn Diện</span>
             <h1>Danh Mục Toàn Bộ Ấn Bản Sách</h1>
@@ -30,6 +31,57 @@
 
     <c:choose>
         <c:when test="${not empty books}">
+            <!-- Catalogue Search & Filter Toolbar (Item 4) -->
+            <div class="catalogue-toolbar">
+                <div class="catalogue-toolbar-row">
+                    <div class="catalogue-search-box">
+                        <svg class="catalogue-search-icon" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" id="catalogueSearchInput" class="catalogue-search-input"
+                               placeholder="Tìm theo tên sách, tác giả, nhà xuất bản..." autocomplete="off">
+                        <button type="button" id="catalogueSearchClear" class="catalogue-search-clear" aria-label="Xóa từ khóa">&times;</button>
+                    </div>
+
+                    <div class="catalogue-filters-group">
+                        <select id="catalogueStockFilter" class="filter-select" aria-label="Lọc theo tình trạng kho">
+                            <option value="all">Tất cả trạng thái kho</option>
+                            <option value="in-stock">Chỉ sách còn hàng</option>
+                            <option value="out-of-stock">Tạm hết hàng</option>
+                        </select>
+
+                        <select id="cataloguePriceFilter" class="filter-select" aria-label="Lọc theo mức giá">
+                            <option value="all">Tất cả mức giá</option>
+                            <option value="under-30">Dưới $30</option>
+                            <option value="30-50">$30 – $50</option>
+                            <option value="over-50">Trên $50</option>
+                        </select>
+
+                        <select id="catalogueSortFilter" class="filter-select" aria-label="Sắp xếp danh mục">
+                            <option value="default">Sắp xếp: Mặc định</option>
+                            <option value="price-asc">Giá: Thấp đến cao</option>
+                            <option value="price-desc">Giá: Cao đến thấp</option>
+                            <option value="title-asc">Tên sách: A – Z</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="catalogue-status-bar">
+                    <span id="catalogueResultCount">Hiển thị ${books.size()} / ${books.size()} ấn bản</span>
+                    <span>Thanh toán khi nhận hàng (COD) tận nơi</span>
+                </div>
+            </div>
+
+            <!-- Empty Search State -->
+            <div id="catalogueEmptyState" class="catalogue-empty-state" style="display: none;">
+                <h3>Không tìm thấy ấn bản phù hợp</h3>
+                <p>Không có cuốn sách nào khớp với từ khóa tìm kiếm hoặc bộ lọc bạn đã chọn.</p>
+                <button type="button" id="catalogueResetBtn" class="btn btn-outline btn-small">
+                    Đặt Lại Bộ Lọc
+                </button>
+            </div>
+
             <div class="book-shelf-grid">
                 <c:forEach var="book" items="${books}">
                     <c:set var="cover" value="${book.coverImage}" />
@@ -51,15 +103,27 @@
                         </c:otherwise>
                     </c:choose>
 
-                    <article class="book-card-item">
+                    <article class="book-card-item"
+                             data-title="${fn:escapeXml(book.title)}"
+                             data-author="${fn:escapeXml(book.authorNames != null ? book.authorNames : '')}"
+                             data-publisher="${fn:escapeXml(book.publisher != null ? book.publisher : '')}"
+                             data-price="${book.price}"
+                             data-stock="${book.quantity}">
                         <div class="book-cover-wrap">
                             <a href="${pageContext.request.contextPath}/book?id=${book.bookId}" aria-label="Xem chi tiết ${book.title}">
                                 <img src="${coverUrl}" alt="${book.title}" class="book-cover-img" loading="lazy"
                                      onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/default-book.png';"/>
                             </a>
-                            <c:if test="${book.quantity <= 0}">
-                                <span class="book-stock-pill out-of-stock">Tạm hết hàng</span>
-                            </c:if>
+                            <c:choose>
+                                <c:when test="${book.quantity <= 0}">
+                                    <span class="book-stock-pill out-of-stock">Tạm hết hàng</span>
+                                </c:when>
+                                <c:when test="${book.quantity <= 3}">
+                                    <span class="book-stock-pill" style="background: #FFF4E5; color: #B76E00; border-color: #FFE0B2;">
+                                        Chỉ còn ${book.quantity} cuốn
+                                    </span>
+                                </c:when>
+                            </c:choose>
                         </div>
 
                         <div class="book-card-meta">

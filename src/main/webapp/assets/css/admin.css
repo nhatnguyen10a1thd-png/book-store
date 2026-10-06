@@ -250,3 +250,107 @@
         grid-column: span 1;
     }
 }
+
+/* Administrative KPI Metric Cards */
+.admin-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+}
+.kpi-card {
+    background: var(--paper-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px 22px;
+    box-shadow: var(--shadow-panel);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--transition-snappy), box-shadow var(--transition-snappy);
+}
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-book);
+}
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--border);
+}
+.kpi-card.kpi-books::before { background: var(--burgundy); }
+.kpi-card.kpi-authors::before { background: var(--antique-gold); }
+.kpi-card.kpi-inventory::before { background: var(--forest); }
+.kpi-card.kpi-warning::before { background: #c2410c; }
+
+.kpi-info {
+    min-width: 0;
+}
+.kpi-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+.kpi-value {
+    font-family: var(--font-serif);
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
+}
+.kpi-subtext {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 6px;
+}
+.kpi-icon-bubble {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--paper-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    border: 1px solid var(--border-light);
+}
+
+.low-stock-alert-panel {
+    background: #FFFBF5;
+    border: 1px solid #F6D8A8;
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    margin-bottom: 28px;
+}
+.low-stock-alert-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    color: #9A5807;
+}
+.low-stock-alert-header h3 {
+    font-size: 1.15rem;
+    margin: 0;
+}
+
+@media (max-width: 1024px) {
+    .admin-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 600px) {
+    .admin-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

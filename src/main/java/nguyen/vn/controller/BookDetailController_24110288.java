@@ -43,9 +43,16 @@ public class BookDetailController_24110288 extends HttpServlet {
                     .average()
                     .orElse(0);
             
+            List<Book_24110288> allBooks = bookService.getAllBooks();
+            List<Book_24110288> relatedBooks = allBooks != null ? allBooks.stream()
+                    .filter(b -> b.getBookId() != bookId)
+                    .limit(4)
+                    .toList() : java.util.Collections.emptyList();
+
             request.setAttribute("book", book);
             request.setAttribute("reviews", reviews);
             request.setAttribute("averageRating", averageRating);
+            request.setAttribute("relatedBooks", relatedBooks);
             request.getRequestDispatcher("/WEB-INF/views/book-detail.jsp").forward(request, response);
             
         } catch (NumberFormatException e) {

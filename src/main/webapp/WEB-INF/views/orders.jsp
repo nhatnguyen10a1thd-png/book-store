@@ -4,7 +4,7 @@
 <html lang="vi">
 <head>
     <title>Lịch Sử Đặt Hàng</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/orders.css?v=20261006">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/orders.css?v=20261007">
 </head>
 <body>
     <section class="order-history" aria-labelledby="history-title">
@@ -59,6 +59,50 @@
                                 </div>
                                 <span class="order-status order-status-${order.statusCode}"><c:out value="${order.statusLabel}"/></span>
                             </header>
+
+                            <!-- Order Timeline Progress Stepper (Item 7) -->
+                            <c:set var="code" value="${order.statusCode}"/>
+                            <c:choose>
+                                <c:when test="${code == 'CANCELLED' || code == 'RETURNED'}">
+                                    <div class="order-status-cancelled-box">
+                                        <strong>Trạng thái:</strong> <c:out value="${order.statusLabel}"/> — Đơn hàng này đã kết thúc hoặc được hoàn lại.
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="stepNum" value="1"/>
+                                    <c:if test="${code == 'CONFIRMED' || code == 'PREPARING'}">
+                                        <c:set var="stepNum" value="2"/>
+                                    </c:if>
+                                    <c:if test="${code == 'SHIPPING' || code == 'DELIVERING'}">
+                                        <c:set var="stepNum" value="3"/>
+                                    </c:if>
+                                    <c:if test="${code == 'DELIVERED'}">
+                                        <c:set var="stepNum" value="4"/>
+                                    </c:if>
+
+                                    <div class="order-stepper-box">
+                                        <div class="order-stepper-track">
+                                            <div class="order-step-point ${stepNum >= 1 ? (stepNum == 1 ? 'is-current' : 'is-done') : ''}">
+                                                <span class="step-dot">${stepNum > 1 ? '✓' : '1'}</span>
+                                                <span class="step-title">Đặt hàng</span>
+                                            </div>
+                                            <div class="order-step-point ${stepNum >= 2 ? (stepNum == 2 ? 'is-current' : 'is-done') : ''}">
+                                                <span class="step-dot">${stepNum > 2 ? '✓' : '2'}</span>
+                                                <span class="step-title">Xác nhận</span>
+                                            </div>
+                                            <div class="order-step-point ${stepNum >= 3 ? (stepNum == 3 ? 'is-current' : 'is-done') : ''}">
+                                                <span class="step-dot">${stepNum > 3 ? '✓' : '3'}</span>
+                                                <span class="step-title">Vận chuyển</span>
+                                            </div>
+                                            <div class="order-step-point ${stepNum >= 4 ? 'is-done is-current' : ''}">
+                                                <span class="step-dot">${stepNum >= 4 ? '✓' : '4'}</span>
+                                                <span class="step-title">Đã giao</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+
                             <div class="history-recipient">
                                 <p><strong>Người nhận:</strong> <c:out value="${order.recipientName}"/> · <c:out value="${order.recipientPhone}"/></p>
                                 <p><strong>Địa chỉ:</strong> <c:out value="${order.shippingAddress}"/></p>
@@ -75,7 +119,7 @@
                                 </c:forEach>
                             </ul>
                             <footer class="history-order-total">
-                                <span>Thanh toán khi nhận hàng (COD)</span>
+                                <span>Hình thức: Thanh toán khi nhận hàng (COD)</span>
                                 <strong>Tổng tiền: $<fmt:formatNumber value="${order.totalAmount}" minFractionDigits="2" maxFractionDigits="2"/></strong>
                             </footer>
                         </article>

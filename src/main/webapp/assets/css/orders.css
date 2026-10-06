@@ -33,3 +33,90 @@
     .order-filter { padding: 8px 12px; }
     .history-item { flex-wrap: wrap; gap: 8px; }
 }
+
+/* Order Timeline Progress Stepper */
+.order-stepper-box {
+    padding: 20px 24px 16px;
+    background: var(--paper-surface);
+    border-top: 1px solid var(--border-light);
+}
+.order-stepper-track {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+    max-width: 640px;
+    margin: 0 auto;
+}
+.order-stepper-track::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 40px;
+    right: 40px;
+    height: 3px;
+    background: var(--border-light);
+    z-index: 1;
+}
+.order-step-point {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    text-align: center;
+}
+.step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--paper-surface);
+    border: 2px solid var(--border);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    transition: all var(--transition-snappy);
+}
+.order-step-point.is-done .step-dot {
+    background: var(--forest);
+    border-color: var(--forest);
+    color: #ffffff;
+}
+.order-step-point.is-current .step-dot {
+    background: var(--paper-surface);
+    border-color: var(--burgundy);
+    color: var(--burgundy);
+    box-shadow: 0 0 0 3px var(--burgundy-subtle);
+    font-weight: 800;
+}
+.step-title {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+}
+.order-step-point.is-done .step-title,
+.order-step-point.is-current .step-title {
+    color: var(--ink);
+    font-weight: 600;
+}
+.order-status-cancelled-box {
+    padding: 14px 20px;
+    background: var(--state-danger-bg);
+    border-left: 4px solid var(--state-danger-text);
+    color: var(--state-danger-text);
+    font-size: 0.88rem;
+    margin: 12px 24px;
+    border-radius: var(--radius-sm);
+}
+@media (max-width: 600px) {
+    .order-stepper-box { padding: 16px 12px; }
+    .order-stepper-track::before { left: 24px; right: 24px; }
+    .step-dot { width: 28px; height: 28px; font-size: 0.76rem; }
+    .step-title { font-size: 0.7rem; }
+}
+

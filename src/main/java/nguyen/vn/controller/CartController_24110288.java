@@ -48,15 +48,13 @@ public class CartController_24110288 extends HttpServlet {
             synchronized (cart) {
                 cart.clear();
             }
-            setFlashMessage(session, "Đã xóa toàn bộ sản phẩm khỏi giỏ hàng.", "success");
-            redirect(request, response, redirectPath);
+            respond(request, response, cart, redirectPath, "Đã xóa toàn bộ sản phẩm khỏi giỏ hàng.", "success", true);
             return;
         }
 
         Integer bookId = parsePositiveInt(request.getParameter("bookId"));
         if (bookId == null) {
-            setFlashMessage(session, "Sản phẩm không hợp lệ.", "danger");
-            redirect(request, response, redirectPath);
+            respond(request, response, cart, redirectPath, "Sản phẩm không hợp lệ.", "danger", false);
             return;
         }
 
@@ -64,8 +62,7 @@ public class CartController_24110288 extends HttpServlet {
             synchronized (cart) {
                 cart.remove(bookId);
             }
-            setFlashMessage(session, "Đã xóa sản phẩm khỏi giỏ hàng.", "success");
-            redirect(request, response, redirectPath);
+            respond(request, response, cart, redirectPath, "Đã xóa sản phẩm khỏi giỏ hàng.", "success", true);
             return;
         }
 
@@ -74,8 +71,7 @@ public class CartController_24110288 extends HttpServlet {
             synchronized (cart) {
                 cart.remove(bookId);
             }
-            setFlashMessage(session, "Sản phẩm không còn tồn tại.", "danger");
-            redirect(request, response, redirectPath);
+            respond(request, response, cart, redirectPath, "Sản phẩm không còn tồn tại.", "danger", false);
             return;
         }
 
@@ -83,37 +79,74 @@ public class CartController_24110288 extends HttpServlet {
             synchronized (cart) {
                 cart.remove(bookId);
             }
-            setFlashMessage(session, "Sản phẩm đã hết hàng.", "danger");
-            redirect(request, response, redirectPath);
+            respond(request, response, cart, redirectPath, "Sản phẩm đã hết hàng.", "danger", false);
             return;
         }
 
         Integer quantity = parsePositiveInt(request.getParameter("quantity"));
         if (quantity == null) {
-            setFlashMessage(session, "Số lượng phải là số nguyên từ 1 trở lên.", "danger");
-            redirect(request, response, redirectPath);
+            respond(request, response, cart, redirectPath, "Số lượng phải là số nguyên từ 1 trở lên.", "danger", false);
             return;
         }
 
         synchronized (cart) {
             if ("update".equals(action)) {
                 if (cart.getItem(bookId) == null) {
-                    setFlashMessage(session, "Sản phẩm không có trong giỏ hàng.", "danger");
+                    respond(request, response, cart, redirectPath, "Sản phẩm không có trong giỏ hàng.", "danger", false);
                 } else {
                     cart.update(book, quantity);
-                    setQuantityMessage(session, quantity, book.getQuantity(), "Đã cập nhật số lượng.");
+                    String[] msgInfo = resolveQuantityMessage(quantity, book.getQuantity(), "Đã cập nhật số lượng.");
+                    respond(request, response, cart, redirectPath, msgInfo[0], msgInfo[1], true);
                 }
             } else if ("add".equals(action)) {
                 CartItem_24110288 currentItem = cart.getItem(bookId);
                 long requestedTotal = (long) quantity + (currentItem == null ? 0 : currentItem.getQuantity());
                 cart.add(book, quantity);
-                setQuantityMessage(session, requestedTotal, book.getQuantity(), "Đã thêm sản phẩm vào giỏ hàng.");
+                String[] msgInfo = resolveQuantityMessage(requestedTotal, book.getQuantity(), "Đã thêm sản phẩm vào giỏ hàng.");
+                respond(request, response, cart, redirectPath, msgInfo[0], msgInfo[1], true);
             } else {
-                setFlashMessage(session, "Thao tác giỏ hàng không hợp lệ.", "danger");
+                respond(request, response, cart, redirectPath, "Thao tác giỏ hàng không hợp lệ.", "danger", false);
             }
         }
+    }
 
-        redirect(request, response, redirectPath);
+    private void respond(HttpServletRequest request, HttpServletResponse response, Cart_24110288 cart,
+                         String redirectPath, String message, String type, boolean success) throws IOException {
+        boolean isAjax = "XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))
+                || (request.getHeader("Accept") != null && request.getHeader("Accept").contains("application/json"))
+                || "json".equalsIgnoreCase(request.getParameter("format"));
+
+        if (isAjax) {
+            response.setContentType("application/json;charset=UTF-8");
+            String safeMsg = escapeJson(message);
+            String safeType = escapeJson(type);
+            String totalStr = cart.getTotal() != null ? cart.getTotal().toString() : "0.00";
+            String json = "{\"success\":" + success
+                    + ",\"message\":\"" + safeMsg + "\""
+                    + ",\"type\":\"" + safeType + "\""
+                    + ",\"itemCount\":" + cart.getItemCount()
+                    + ",\"total\":" + totalStr + "}";
+            response.getWriter().write(json);
+        } else {
+            setFlashMessage(request.getSession(), message, type);
+            redirect(request, response, redirectPath);
+        }
+    }
+
+    private String escapeJson(String input) {
+        if (input == null) return "";
+        return input.replace("\\", "\\\\")
+                    .replace("\"", "\\\"")
+                    .replace("\r", "\\r")
+                    .replace("\n", "\\n");
+    }
+
+    private String[] resolveQuantityMessage(long requestedQuantity, int stock, String successMessage) {
+        if (requestedQuantity > stock) {
+            return new String[]{"Số lượng tối đa hiện có là " + stock + ". Giỏ hàng đã được điều chỉnh.", "warning"};
+        } else {
+            return new String[]{successMessage, "success"};
+        }
     }
 
     private Cart_24110288 getCart(HttpSession session) {

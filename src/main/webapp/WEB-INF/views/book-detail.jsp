@@ -76,14 +76,19 @@
                         $<fmt:formatNumber value="${book.price}" minFractionDigits="2" maxFractionDigits="2"/>
                     </span>
                     <c:choose>
-                        <c:when test="${book.quantity > 0}">
-                            <span class="detail-stock-badge in-stock">
-                                ✓ Còn ${book.quantity} cuốn trong kho
+                        <c:when test="${book.quantity <= 0}">
+                            <span class="detail-stock-badge out-of-stock">
+                                ✕ Tạm thời hết hàng
+                            </span>
+                        </c:when>
+                        <c:when test="${book.quantity <= 3}">
+                            <span class="stock-urgency-badge">
+                                🔥 Chỉ còn duy nhất ${book.quantity} cuốn trong kho
                             </span>
                         </c:when>
                         <c:otherwise>
-                            <span class="detail-stock-badge out-of-stock">
-                                ✕ Tạm thời hết hàng
+                            <span class="detail-stock-badge in-stock">
+                                ✓ Còn ${book.quantity} cuốn trong kho
                             </span>
                         </c:otherwise>
                     </c:choose>
@@ -112,9 +117,11 @@
 
                                 <div class="quantity-control-group">
                                     <label for="cartQuantity">Số lượng:</label>
-                                    <div class="quantity-stepper">
+                                    <div class="quantity-stepper-control">
+                                        <button type="button" class="stepper-btn stepper-minus" aria-label="Giảm số lượng">-</button>
                                         <input id="cartQuantity" type="number" name="quantity" value="1" min="1"
-                                               max="${book.quantity}" class="form-control" required/>
+                                               max="${book.quantity}" class="stepper-input" required/>
+                                        <button type="button" class="stepper-btn stepper-plus" aria-label="Tăng số lượng">+</button>
                                     </div>
                                 </div>
 
@@ -248,6 +255,80 @@
                 </form>
             </div>
         </section>
+
+        <!-- Related Books Section (Item 5) -->
+        <c:if test="${not empty relatedBooks}">
+            <section class="related-books-section">
+                <div class="related-books-head">
+                    <div>
+                        <span class="eyebrow">Ấn Bản Cùng Tuyển Tập</span>
+                        <h2>Có Thể Bạn Quan Tâm</h2>
+                    </div>
+                    <a href="${pageContext.request.contextPath}/products" class="btn btn-outline btn-small">
+                        Xem tất cả ấn bản &rarr;
+                    </a>
+                </div>
+
+                <div class="related-books-grid">
+                    <c:forEach var="relBook" items="${relatedBooks}">
+                        <c:set var="relCover" value="${relBook.coverImage}" />
+                        <c:choose>
+                            <c:when test="${empty relCover}">
+                                <c:set var="relCoverUrl" value="${pageContext.request.contextPath}/assets/images/default-book.png" />
+                            </c:when>
+                            <c:when test="${relCover.startsWith('http://') || relCover.startsWith('https://') || relCover.startsWith('data:')}">
+                                <c:set var="relCoverUrl" value="${relCover}" />
+                            </c:when>
+                            <c:when test="${relCover.startsWith('/')}">
+                                <c:set var="relCoverUrl" value="${pageContext.request.contextPath}${relCover}" />
+                            </c:when>
+                            <c:when test="${relCover.startsWith('assets/')}">
+                                <c:set var="relCoverUrl" value="${pageContext.request.contextPath}/${relCover}" />
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="relCoverUrl" value="${pageContext.request.contextPath}/assets/images/${relCover}" />
+                            </c:otherwise>
+                        </c:choose>
+
+                        <article class="book-card-item">
+                            <div class="book-cover-wrap">
+                                <a href="${pageContext.request.contextPath}/book?id=${relBook.bookId}">
+                                    <img src="${relCoverUrl}" alt="${relBook.title}" class="book-cover-img" loading="lazy"
+                                         onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/default-book.png';"/>
+                                </a>
+                                <c:if test="${relBook.quantity <= 0}">
+                                    <span class="book-stock-pill out-of-stock">Tạm hết</span>
+                                </c:if>
+                            </div>
+
+                            <div class="book-card-meta">
+                                <span class="book-card-category">${not empty relBook.publisher ? relBook.publisher : 'Ấn bản chọn lọc'}</span>
+                                <h3 class="book-card-title">
+                                    <a href="${pageContext.request.contextPath}/book?id=${relBook.bookId}">
+                                        <c:out value="${relBook.title}"/>
+                                    </a>
+                                </h3>
+                                <p class="book-card-author">
+                                    ${relBook.authorNames != null ? relBook.authorNames : 'Đang cập nhật'}
+                                </p>
+
+                                <div class="book-card-pricing">
+                                    <span class="book-price-figure">
+                                        $<fmt:formatNumber value="${relBook.price}" minFractionDigits="2" maxFractionDigits="2"/>
+                                    </span>
+                                </div>
+
+                                <div class="book-card-actions">
+                                    <a href="${pageContext.request.contextPath}/book?id=${relBook.bookId}" class="btn btn-outline btn-block btn-small">
+                                        Xem Chi Tiết
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                    </c:forEach>
+                </div>
+            </section>
+        </c:if>
     </div>
 </body>
 </html>

@@ -6,7 +6,7 @@
     <title>Giỏ Sách Của Bạn — BookStore Tri Thức</title>
 </head>
 <body>
-    <div class="page-header" style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end;">
+    <div class="page-header" style="margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end;">
         <div>
             <span class="eyebrow">Túi Sách Tuyển Chọn</span>
             <h1>Giỏ Hàng Của Bạn</h1>
@@ -21,6 +21,27 @@
 
     <c:choose>
         <c:when test="${not empty sessionScope.cart && not empty sessionScope.cart.items}">
+            <!-- Free Shipping Progress Tracker (Item 6) -->
+            <c:set var="freeShippingGoal" value="50.0" />
+            <c:set var="cartTotal" value="${sessionScope.cart.total != null ? sessionScope.cart.total : 0}" />
+            <div class="cart-shipping-notice">
+                <div class="cart-shipping-notice-title">
+                    <c:choose>
+                        <c:when test="${cartTotal >= freeShippingGoal}">
+                            <span>🎉 Chúc mừng! Đơn hàng của bạn đã đủ điều kiện <strong>Miễn Phí Giao Hàng COD</strong> toàn quốc.</span>
+                            <span style="color: var(--forest); font-weight: 700;">Đã đạt Freeship</span>
+                        </c:when>
+                        <c:otherwise>
+                            <span>Thêm <strong>$<fmt:formatNumber value="${freeShippingGoal - cartTotal}" minFractionDigits="2" maxFractionDigits="2"/></strong> để nhận ưu đãi <strong>Miễn Phí Giao Hàng (COD)</strong></span>
+                            <span>Mục tiêu $50.00</span>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <div class="shipping-progress-track">
+                    <div class="shipping-progress-fill" style="width: ${cartTotal >= freeShippingGoal ? 100 : (cartTotal / freeShippingGoal) * 100}%;"></div>
+                </div>
+            </div>
+
             <div class="cart-two-column-layout">
                 <div class="cart-table-card">
                     <table class="cart-editorial-table">
@@ -75,15 +96,17 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <form action="${pageContext.request.contextPath}/cart" method="post" class="cart-update-form">
+                                        <form action="${pageContext.request.contextPath}/cart" method="post" class="cart-update-form" style="display: flex; align-items: center; gap: 8px;">
                                             <input type="hidden" name="action" value="update"/>
                                             <input type="hidden" name="bookId" value="${item.book.bookId}"/>
-                                            <div class="quantity-stepper">
+                                            <div class="quantity-stepper-control">
+                                                <button type="button" class="stepper-btn stepper-minus" aria-label="Giảm">-</button>
                                                 <input type="number" name="quantity" value="${item.quantity}" min="1"
-                                                       max="${item.book.quantity}" class="form-control" required/>
+                                                       max="${item.book.quantity}" class="stepper-input" required/>
+                                                <button type="button" class="stepper-btn stepper-plus" aria-label="Tăng">+</button>
                                             </div>
-                                            <button type="submit" class="btn btn-outline btn-small" title="Cập nhật số lượng">
-                                                Đổi
+                                            <button type="submit" class="btn btn-outline btn-small" title="Lưu số lượng">
+                                                Lưu
                                             </button>
                                         </form>
                                     </td>
@@ -93,7 +116,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <form action="${pageContext.request.contextPath}/cart" method="post">
+                                        <form action="${pageContext.request.contextPath}/cart" method="post" class="cart-remove-form">
                                             <input type="hidden" name="action" value="remove"/>
                                             <input type="hidden" name="bookId" value="${item.book.bookId}"/>
                                             <button type="submit" class="btn btn-danger btn-small" title="Xóa khỏi giỏ hàng">
@@ -115,10 +138,21 @@
                     </div>
                     <div class="summary-data-row">
                         <span>Hình thức vận chuyển</span>
-                        <span>Giao tận nơi (COD)</span>
+                        <span>Giao hàng COD</span>
+                    </div>
+                    <div class="summary-data-row">
+                        <span>Phí giao hàng</span>
+                        <c:choose>
+                            <c:when test="${cartTotal >= freeShippingGoal}">
+                                <strong style="color: var(--forest);">MIỄN PHÍ</strong>
+                            </c:when>
+                            <c:otherwise>
+                                <span>Thanh toán theo đơn COD</span>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="summary-data-row total-row">
-                        <span>Tổng thanh toán</span>
+                        <span>Tổng thanh toán tạm tính</span>
                         <strong>$<fmt:formatNumber value="${sessionScope.cart.total}" minFractionDigits="2" maxFractionDigits="2"/></strong>
                     </div>
 
@@ -135,6 +169,18 @@
                         </form>
                     </div>
                 </aside>
+            </div>
+
+            <!-- Confirmation Modal for Removal (Item 6) -->
+            <div id="cartConfirmModal" class="cart-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+                <div class="cart-confirm-card">
+                    <h3 id="modalTitle">Xác Nhận Xóa Ấn Phẩm</h3>
+                    <p>Bạn có chắc chắn muốn bỏ cuốn sách này ra khỏi túi sách tuyển chọn của mình?</p>
+                    <div class="cart-confirm-actions">
+                        <button type="button" id="cartConfirmNo" class="btn btn-outline">Giữ Lại</button>
+                        <button type="button" id="cartConfirmYes" class="btn btn-danger">Xóa Khỏi Giỏ</button>
+                    </div>
+                </div>
             </div>
         </c:when>
         <c:otherwise>
